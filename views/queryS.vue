@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Header :title="'查询学生'" :desc="'查询当前学生列表'"/>
+    <Header :title="'查询学生'" :desc="'查询当前学生列表'" />
     <div class="nav">
       <a-button class="add-btn" type="primary" @click="showModal">
         <template #icon><plus-outlined /></template>
@@ -101,7 +101,7 @@
           <div class="editable-row-operations">
             <span v-if="editableData[record.key]">
               <a-typography-link @click="save(record.key)"
-                >Save</a-typography-link
+                >保存</a-typography-link
               >
               <a-popconfirm title="确定要取消吗?" @confirm="cancel(record.key)">
                 <a>取消</a>
@@ -125,12 +125,14 @@
 </template>
 <script setup>
 import { cloneDeep } from "lodash-es";
-import { reactive, ref, onMounted, toRaw } from "vue";
+import { reactive, ref, onMounted, toRaw, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import { Form } from "ant-design-vue";
 //组件
 import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
+
+const { proxy } = getCurrentInstance();
 
 const $router = useRouter();
 const showData = ref([]);
@@ -164,6 +166,7 @@ const onSubmit = () => {
       dataSource.value.unshift(newData);
       showData.value = dataSource.value;
       visible.value = false;
+      console.log('stu',newData);
     })
     .catch((err) => {
       console.log("error", err);
@@ -172,6 +175,7 @@ const onSubmit = () => {
 
 //表单
 const formState = reactive({
+  sId: null,
   sNum: "",
   sName: "",
   sAge: undefined,
@@ -254,7 +258,7 @@ const layout = {
   wrapperCol: { span: 14 },
 };
 const handleFinish = (values) => {
-  console.log(values, formState);
+  console.log(formState);
 };
 const handleFinishFailed = (errors) => {
   console.log(errors);
@@ -268,6 +272,7 @@ const handleValidate = (...args) => {
 };
 
 const onDelete = (key) => {
+  console.log(dataSource.value[key]);
   dataSource.value = dataSource.value.filter((item) => item.key !== key);
   showData.value = dataSource.value;
 };
@@ -316,17 +321,21 @@ const columns = [
   },
 ];
 let count = ref(0);
-for (count.value = 0; count.value < 11; count.value++) {
-  data.push({
-    key: count.value.toString(),
-    sNum: "2021214" + count.value,
-    sName: `李华${count.value}`,
-    sSex: `男`,
-    sAge: 32,
-    sPhone: "17830941432",
-    sAdvisor: "李真真",
+proxy.$axios.get("http://localhost:3000/api/get").then((res) => {
+  console.log(res.data.data);
+  res.data.data.map((item, index) => {
+    dataSource.value.push({
+      sid: item.name,
+      key: index,
+      sNum: item.sName,
+      sName: item.sName,
+      sSex: item.sName,
+      sAge: item.sName,
+      sPhone: item.sName,
+      sAdvisor: item.sName,
+    });
   });
-}
+});
 showData.value = data;
 const dataSource = ref(data);
 const editableData = reactive({});
@@ -342,6 +351,7 @@ const save = (key) => {
     editableData[key]
   );
   delete editableData[key];
+  console.log(dataSource.value[key]);
 };
 const cancel = (key) => {
   delete editableData[key];
@@ -351,7 +361,9 @@ const onSearch = (searchValue) => {
   if (searchValue === "") showData.value = dataSource.value;
   else
     showData.value = dataSource.value.filter(
-      (item) => item.sName.indexOf(searchValue) != -1  || item.sNum.indexOf(searchValue) != -1
+      (item) =>
+        item.sName.indexOf(searchValue) != -1 ||
+        item.sNum.indexOf(searchValue) != -1
     );
 };
 onMounted(() => {});
