@@ -26,10 +26,7 @@
       </ul>
     </div>
     <Speech @sendRecord="sendRecord" class="speech" ref="speech"></Speech>
-    <!-- <div class="floating">
-      <img src="../assets/robot.svg" alt="" />
-      <span class="text">{{ message }}</span>
-    </div> -->
+    <QueryS v-if="isQueryOne" />
     <div class="ipt-box">
       <input
         ref="ipt"
@@ -53,15 +50,18 @@
 <script setup>
 import { ref, defineComponent, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { centreAPI } from "../api/AI.js";
 //组件
 import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
 import Loading from "../components/Loading/index.vue";
+import QueryS from "../components/Query/queryS.vue";
 
 const router = useRouter();
 const speech = ref(null);
 const message = ref("");
 const flag = ref(true);
+const isQueryOne = ref(false); //是否查询的是单个人
 
 function record() {
   if (flag.value) {
@@ -92,86 +92,42 @@ let chatlist = ref([
   },
 ]);
 let chatBox = ref(null);
+function dialogMoveWithStr(str, delay = 0, callback) {
+  setTimeout(() => {
+    if (str) {
+      chatlist.value.push({
+        type: 0,
+        str,
+      });
+    }
+    if (callback) callback();
+    nextTick(() => {
+      chatBox.value.scrollTop += chatBox.value.scrollHeight;
+    });
+  }, delay);
+}
 function AIidentify() {
-  // let r = eval(`/^${str}/`);
   let cx = /查询([\u4e00-\u9fa5]{2,4})$/;
   let sc = /删除([\u4e00-\u9fa5]{2,4})$/;
   let tj =
     /添加([\u4e00-\u9fa5]+)\s+(\d{1,2})\s+([\u4e00-\u9fa5]+)\s+(\d+)\s+(\d+)\s+([\u4e00-\u9fa5]+)$/;
   let xg =
     /修改([\u4e00-\u9fa5]{2,4})的信息：([\u4e00-\u9fa5]{2,4}\s+\d+\s+(男|女)\s+\d{7}\s+\d{7}\s+[\u4e00-\u9fa5]{2,4})$/;
+  isQueryOne.value = false;
   if (cx.test(content.value)) {
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "请稍等，正在为您查询……",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 600);
-    setTimeout(() => {
-      router.push({
-        path: "/queryS",
-      });
-    }, 1500);
+    dialogMoveWithStr("请稍等，正在为您查询……", 600);
+    dialogMoveWithStr("查询完成!", 1500, () => {
+      isQueryOne.value = true;
+    });
   } else if (sc.test(content.value)) {
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "请稍等，正在为您删除数据……",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 600);
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "删除成功！",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 1500);
+    dialogMoveWithStr("请稍等，正在为您删除数据……",600);
+    dialogMoveWithStr("删除成功!", 1500);
   } else if (tj.test(content.value)) {
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "请稍等，正在为您添加数据……",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 600);
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "添加成功！",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 1500);
+    dialogMoveWithStr("请稍等，正在为您添加数据……",600);
+    dialogMoveWithStr("添加成功!",1500);
   } else if (xg.test(content.value)) {
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "请稍等，正在为您修改数据……",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 600);
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: "修改成功！",
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 1500);
+    dialogMoveWithStr("请稍等，正在为您修改数据……",600);
+    dialogMoveWithStr("修改成功!",1500);
   } else {
     setTimeout(() => {
       chatlist.value.push({
@@ -198,6 +154,9 @@ function submitMsg() {
       path: "/queryS",
     });
   } else {
+    centreAPI(content.value).then((res) => {
+      console.log("centreAPI-res", res);
+    });
     AIidentify();
   }
   chatlist.value.push({
@@ -206,9 +165,7 @@ function submitMsg() {
   });
   content.value = "";
   ipt.value.focus();
-  nextTick(() => {
-    chatBox.value.scrollTop += chatBox.value.scrollHeight;
-  });
+  dialogMoveWithStr();
 }
 
 const sendRecord = (val) => {
@@ -348,22 +305,6 @@ const sendRecord = (val) => {
     /*滚动条里面小方块*/
     // border-radius: 15px;
     background-color: #82c7b7;
-  }
-}
-
-.floating {
-  animation: floating 2s ease-in-out infinite;
-}
-
-@keyframes floating {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
   }
 }
 

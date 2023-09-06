@@ -128,11 +128,16 @@ import { cloneDeep } from "lodash-es";
 import { reactive, ref, onMounted, toRaw, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import { Form } from "ant-design-vue";
+//API
+import {
+  addStudent2API,
+  deleteStudent2API,
+  selectAllStudentPaginateAPI,
+  updateStudent2API,
+} from "../api/query.js";
 //组件
 import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
-
-const { proxy } = getCurrentInstance();
 
 const $router = useRouter();
 const showData = ref([]);
@@ -166,7 +171,7 @@ const onSubmit = () => {
       dataSource.value.unshift(newData);
       showData.value = dataSource.value;
       visible.value = false;
-      console.log('stu',newData);
+      console.log("stu", newData);
     })
     .catch((err) => {
       console.log("error", err);
@@ -259,6 +264,10 @@ const layout = {
 };
 const handleFinish = (values) => {
   console.log(formState);
+  const { sId, sName, sAge, sSex, sPhone, sNum, sAdvisor } = formState;
+  addStudent2API(sId, sName, sAge, sSex, sPhone, sNum, sAdvisor).then((res) => {
+    console.log("addStudent2API-res", res);
+  });
 };
 const handleFinishFailed = (errors) => {
   console.log(errors);
@@ -272,7 +281,9 @@ const handleValidate = (...args) => {
 };
 
 const onDelete = (key) => {
-  console.log(dataSource.value[key]);
+  deleteStudent2API(dataSource.value[key].sId).then((res) => {
+    console.log("deleteStudent2API-res", res);
+  });
   dataSource.value = dataSource.value.filter((item) => item.key !== key);
   showData.value = dataSource.value;
 };
@@ -321,7 +332,7 @@ const columns = [
   },
 ];
 let count = ref(0);
-proxy.$axios.get("http://localhost:3000/api/get").then((res) => {
+selectAllStudentPaginateAPI(10, 1).then((res) => {
   console.log(res.data.data);
   res.data.data.map((item, index) => {
     dataSource.value.push({
@@ -350,8 +361,14 @@ const save = (key) => {
     dataSource.value.filter((item) => key === item.key)[0],
     editableData[key]
   );
+  let curObj = dataSource.value[key];
+  const { sId, sNum, sName, sSex, sAge, sPhone, sAdvisor } = curObj;
+  updateStudent2API(sId, sNum, sName, sSex, sAge, sPhone, sAdvisor)
+  .then((res) => {
+      console.log("updateStudent2API-res", res);
+    }
+  );
   delete editableData[key];
-  console.log(dataSource.value[key]);
 };
 const cancel = (key) => {
   delete editableData[key];

@@ -2,7 +2,7 @@ import request from "../utils/request";
 
 export function loginAPI(username,password) {
     return request({
-        url: '/login',
+        url: '/studentLogin',
         method: 'post',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

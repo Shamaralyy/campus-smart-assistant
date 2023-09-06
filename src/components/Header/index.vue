@@ -65,8 +65,8 @@ import { logout } from "../../api/login.js";
 
 const router = useRouter();
 const isHome = ref(false);
-const id = JSON.parse(sessionStorage.getItem("userMsg")).id; //学号
-const name = JSON.parse(sessionStorage.getItem("userMsg")).name; //姓名
+const id = sessionStorage.getItem("userMsg")?JSON.parse(sessionStorage.getItem("userMsg")).id:'未登录'; //学号
+const name = sessionStorage.getItem("userMsg")?JSON.parse(sessionStorage.getItem("userMsg")).name:'未登录'; //姓名
 
 onMounted(() => {
   if (props.title === "当前") isHome.value = true;

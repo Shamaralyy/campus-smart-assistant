@@ -105,34 +105,23 @@ function login() {
       }, 1000);
     }
 
-    loginAPI(username.value,psw.value).then((res) => {
-      console.log("loginApi-res", res);
-      sessionStorage.setItem("userMsg", JSON.stringify(res.data.msg));
-    });
-
-    // proxy.$axios
-    //   .post("http://localhost:3000/api/studentLogin", {
-    //     username: username.value,
-    //     psw: psw.value,
-    //   })
-    //   .then((res) => {
-    //   console.log(res);
-    //   if (res.data.status == 200) {
-    //     sessionStorage.setItem("student", res.data.data);
-    //     console.log(sessionStorage.getItem("student"));
-    //     router.push({
-    //       path: "/AI", //目标路由地址
-    //       // query:{
-    //       //     ...route.query,//路由传参
-    //       // }
-    //     });
-    //   } else {
-    //     validate.value = true;
-    //     setTimeout(() => {
-    //       validate.value = false;
-    //     }, 1000);
-    //   }
-    // });
+    loginAPI(username.value, psw.value)
+      .then((res) => {
+        console.log("loginApi-res", res);
+        sessionStorage.setItem("userMsg", JSON.stringify(res.data.msg));
+      })
+      .then((res) => {
+        if (res.data.code == 200) {
+          router.push({
+            path: "/AI", //目标路由地址
+          });
+        } else {
+          validate.value = true;
+          setTimeout(() => {
+            validate.value = false;
+          }, 1000);
+        }
+      });
   }
 }
 function register() {
