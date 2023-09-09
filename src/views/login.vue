@@ -108,10 +108,8 @@ function login() {
     loginAPI(username.value, psw.value)
       .then((res) => {
         console.log("loginApi-res", res);
-        sessionStorage.setItem("userMsg", JSON.stringify(res.data.msg));
-      })
-      .then((res) => {
-        if (res.data.code == 200) {
+        sessionStorage.setItem("userMsg", JSON.stringify(res.data.data));
+        if (res.data.code >= 200 && res.data.code < 300) {
           router.push({
             path: "/AI", //目标路由地址
           });
@@ -121,6 +119,9 @@ function login() {
             validate.value = false;
           }, 1000);
         }
+      })
+      .catch(e => {
+        console.error(e);
       });
   }
 }

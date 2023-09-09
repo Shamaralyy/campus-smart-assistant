@@ -108,21 +108,6 @@
       dataIndex: "operation",
     },
   ];
-  selectAllStudentPaginateAPI(10, 1).then((res) => {
-    console.log(res.data.data);
-    res.data.data.map((item, index) => {
-      dataSource.value.push({
-        sid: item.name,
-        key: index,
-        sNum: item.sName,
-        sName: item.sName,
-        sSex: item.sName,
-        sAge: item.sName,
-        sPhone: item.sName,
-        sAdvisor: item.sName,
-      });
-    });
-  });
 
   showData.value = data;
   const dataSource = ref(data);

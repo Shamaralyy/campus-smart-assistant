@@ -158,6 +158,9 @@ function submitMsg() {
       console.log("centreAPI-res", res);
     });
     AIidentify();
+    if(isQueryOne.value) {
+      //单人查询代码
+    }
   }
   chatlist.value.push({
     type: 1,

@@ -4,9 +4,6 @@ export function loginAPI(username,password) {
     return request({
         url: '/studentLogin',
         method: 'post',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
         data: {
             username,
             password
