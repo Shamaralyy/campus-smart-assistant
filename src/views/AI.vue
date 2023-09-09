@@ -41,15 +41,20 @@
       <label for="upload">
         <UploadOutlined class="i_upload" />
       </label>
-      <input
-        type="file"
-        id="upload"
-        multiple="multiple"
-        style="display: none"
-        @change="uploadFile"
-      />
       <a @click="submitMsg" id="sub-btn">发送</a>
     </div>
+    <!-- 上传文件（隐藏） -->
+    <a-upload
+      id="upload"
+      :file-list="fileList"
+      :before-upload="beforeUpload"
+      @remove="handleRemove"
+    >
+      <a-button style="display: none">
+        <upload-outlined></upload-outlined>
+        Select File
+      </a-button>
+    </a-upload>
     <div class="circle">
       <img class="yy" src="../assets/yy.svg" alt="" @click="record" />
     </div>
@@ -60,17 +65,19 @@
 <script setup>
 import { ref, defineComponent, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { centreAPI } from "../api/AI.js";
 import { UploadOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 //组件
 import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
 import Loading from "../components/Loading/index.vue";
 import QueryS from "../components/Query/queryS.vue";
+//API
+import { centreAPI } from "../api/AI.js";
+import { uploadFileAPI } from "../api/uploadFile.js";
 
 const router = useRouter();
 const speech = ref(null);
-const message = ref("");
 const flag = ref(true);
 const isQueryOne = ref(false); //是否查询的是单个人
 
@@ -82,6 +89,41 @@ function record() {
   }
   flag.value = !flag.value;
 }
+
+//上传文件
+const fileList = ref([]);
+const handleRemove = (file) => {
+  const index = fileList.value.indexOf(file);
+  const newFileList = fileList.value.slice();
+  newFileList.splice(index, 1);
+  fileList.value = newFileList;
+};
+const beforeUpload = (file) => {
+  fileList.value = [...(fileList.value || []), file];
+  return false;
+};
+const handleUpload = async () => {
+  if(content.value !== '') AIidentify();
+  const formData = new FormData();
+  fileList.value.forEach((file) => {
+    formData.append("file", file);
+  });
+  fileList.value.forEach((item) => {
+      content.value += " 📄" + item.name + " ";
+    });
+  try {
+    const res = await uploadFileAPI(formData);
+    console.log("fileList-res", res);
+    message.success("上传成功");
+    dialogMoveWithStr("上传成功");
+    fileList.value = [];
+  } catch (err) {
+    message.error("上传失败");
+    dialogMoveWithStr("上传文件失败，请重试😭");
+    console.error(err);
+  }
+};
+
 //输入框
 const ipt = ref(null);
 const content = ref(""); //v-model绑定
@@ -150,13 +192,11 @@ function AIidentify() {
     dialogMoveWithStr(str, 600);
   }
 }
-//上传文件
-function uploadFile(e) {
-  console.log("e", e.target.files);
-}
 function submitMsg() {
-  if (content.value === "") {
+  if (content.value === "" && fileList.value.length === 0) {
     return false;
+  } else if (fileList.value.length !== 0) {
+    handleUpload();
   } else if (content.value === "查询所有学生") {
     router.push({
       path: "/queryS",
@@ -324,26 +364,29 @@ const sendRecord = (val) => {
   background-color: rgba(240, 255, 252, 0.5);
   position: relative;
   margin-top: 4%;
+  margin-bottom: -1.5%;
 
   #search {
     float: left;
-    width: 50vw;
+    width: 50.2vw;
     outline: none;
     height: 7vh;
     white-space: nowrap;
     overflow-x: scroll;
     border: none;
-    border-right: 3px solid rgba(137, 197, 183, 0.4);
   }
 
   .i_upload {
     position: absolute;
+    width: 6%;
     height: 7vh;
+    text-align: center;
     line-height: 7vh;
-    right: 12%;
+    right: 10%;
     cursor: pointer;
     font-size: 22px;
     color: rgb(110, 161, 149);
+    border-left: 3px solid rgba(137, 197, 183, 0.4);
   }
 
   #sub-btn {
