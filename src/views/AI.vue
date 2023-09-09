@@ -38,7 +38,17 @@
         @keyup="enter"
         v-model="content"
       />
-      <a @click="submitMsg" ghost class="query-btn" id="sub-btn">发送</a>
+      <label for="upload">
+        <UploadOutlined class="i_upload" />
+      </label>
+      <input
+        type="file"
+        id="upload"
+        multiple="multiple"
+        style="display: none"
+        @change="uploadFile"
+      />
+      <a @click="submitMsg" id="sub-btn">发送</a>
     </div>
     <div class="circle">
       <img class="yy" src="../assets/yy.svg" alt="" @click="record" />
@@ -51,6 +61,7 @@
 import { ref, defineComponent, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { centreAPI } from "../api/AI.js";
+import { UploadOutlined } from "@ant-design/icons-vue";
 //组件
 import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
@@ -120,31 +131,28 @@ function AIidentify() {
       isQueryOne.value = true;
     });
   } else if (sc.test(content.value)) {
-    dialogMoveWithStr("请稍等，正在为您删除数据……",600);
+    dialogMoveWithStr("请稍等，正在为您删除数据……", 600);
     dialogMoveWithStr("删除成功!", 1500);
   } else if (tj.test(content.value)) {
-    dialogMoveWithStr("请稍等，正在为您添加数据……",600);
-    dialogMoveWithStr("添加成功!",1500);
+    dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
+    dialogMoveWithStr("添加成功!", 1500);
   } else if (xg.test(content.value)) {
-    dialogMoveWithStr("请稍等，正在为您修改数据……",600);
-    dialogMoveWithStr("修改成功!",1500);
+    dialogMoveWithStr("请稍等，正在为您修改数据……", 600);
+    dialogMoveWithStr("修改成功!", 1500);
   } else {
-    setTimeout(() => {
-      chatlist.value.push({
-        type: 0,
-        str: `格式错误。\n请参照以下示例： \n
+    let str = `格式错误。\n请参照以下示例： \n
     1.查询所有学生
     2.查询李一（格式为：查询+学生姓名）
     3.添加罗 20 男 5615156 5611541 陈老师”（格式为：添加+学生姓名+空格+年龄+空格+电话+空格+学号+空格+辅导员姓名）
     4.修改李一的信息：李三 20 男 5615156 5611541 陈老师（格式为：修改+学生姓名+的信息：学生姓名+空格+空格+电话+空格+学号+空格+辅导员姓名）
     5.删除罗（格式为：删除+学生姓名）
-    注意：在关键信息出现之前，前面的文字不做规定，如：我想要删除罗二（只要删除之前不出现：增加’修改，查询这些关键字），这是可以的。但在之后不能有多余的文字，如：删除罗二吧。`,
-      });
-      nextTick(() => {
-        chatBox.value.scrollTop += chatBox.value.scrollHeight;
-      });
-    }, 600);
+    注意：在关键信息出现之前，前面的文字不做规定，如：我想要删除罗二（只要删除之前不出现：增加’修改，查询这些关键字），这是可以的。但在之后不能有多余的文字，如：删除罗二吧。`;
+    dialogMoveWithStr(str, 600);
   }
+}
+//上传文件
+function uploadFile(e) {
+  console.log("e", e.target.files);
 }
 function submitMsg() {
   if (content.value === "") {
@@ -158,7 +166,7 @@ function submitMsg() {
       console.log("centreAPI-res", res);
     });
     AIidentify();
-    if(isQueryOne.value) {
+    if (isQueryOne.value) {
       //单人查询代码
     }
   }
@@ -296,7 +304,6 @@ const sendRecord = (val) => {
     /*滚动条整体样式*/
     width: 10px;
     height: -10px;
-    // border-radius: 15px;
     background: #dcf5ef;
   }
 
@@ -312,23 +319,41 @@ const sendRecord = (val) => {
 }
 
 .ipt-box {
+  width: 60vw;
+  border: 3px solid rgba(137, 197, 183, 0.4);
+  background-color: rgba(240, 255, 252, 0.5);
   position: relative;
+  margin-top: 4%;
+
   #search {
+    float: left;
+    width: 50vw;
     outline: none;
-    margin-top: 4%;
-    width: 60vw;
     height: 7vh;
-    // border: 3px solid rgb(137, 197, 183, 0.5);
-    border: 3px solid rgba(137, 197, 183, 0.4);
-    background-color: rgba(240, 255, 252, 0.5);
-    // border-radius: 25px;
+    white-space: nowrap;
+    overflow-x: scroll;
+    border: none;
+    border-right: 3px solid rgba(137, 197, 183, 0.4);
+  }
+
+  .i_upload {
+    position: absolute;
+    height: 7vh;
+    line-height: 7vh;
+    right: 12%;
+    cursor: pointer;
+    font-size: 22px;
+    color: rgb(110, 161, 149);
   }
 
   #sub-btn {
     position: absolute;
-    top: 21%;
     right: 0%;
     border-left: 3px solid rgba(137, 197, 183, 0.337);
+    width: 10%;
+    height: 7vh;
+    line-height: 7vh;
+    color: rgb(137, 197, 183, 0.8);
   }
 }
 
@@ -352,13 +377,5 @@ const sendRecord = (val) => {
 #loading {
   margin-top: 2.2%;
   margin-left: -3.5%;
-}
-
-.query-btn {
-  width: 10%;
-  height: 6.6vh;
-  line-height: 6.6vh;
-  margin-top: 2.2%;
-  color: rgb(137, 197, 183, 0.8);
 }
 </style>
