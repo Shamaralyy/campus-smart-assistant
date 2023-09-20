@@ -59,6 +59,7 @@
       <img class="yy" src="../assets/yy.svg" alt="" @click="record" />
     </div>
     <Loading id="loading" v-show="!flag" />
+    <Graph />
   </div>
 </template>
 
@@ -72,6 +73,7 @@ import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
 import Loading from "../components/Loading/index.vue";
 import QueryS from "../components/Query/queryS.vue";
+import Graph from "../components/Graph/index.vue";
 //API
 import { centreAPI } from "../api/AI.js";
 import { uploadFileAPI } from "../api/uploadFile.js";
@@ -103,14 +105,14 @@ const beforeUpload = (file) => {
   return false;
 };
 const handleUpload = async () => {
-  if(content.value !== '') AIidentify();
+  if (content.value !== "") AIidentify();
   const formData = new FormData();
   fileList.value.forEach((file) => {
     formData.append("file", file);
   });
   fileList.value.forEach((item) => {
-      content.value += " 📄" + item.name + " ";
-    });
+    content.value += " 📄" + item.name + " ";
+  });
   try {
     const res = await uploadFileAPI(formData);
     console.log("fileList-res", res);
