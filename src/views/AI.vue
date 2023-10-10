@@ -68,6 +68,7 @@ import { ref, defineComponent, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+
 //组件
 import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
@@ -77,8 +78,11 @@ import Graph from "../components/Graph/index.vue";
 //API
 import { centreAPI } from "../api/AI.js";
 import { uploadFileAPI } from "../api/uploadFile.js";
+//hooks
+import useFileSlicing from "../hooks/useFileSlicing";
 
 const router = useRouter();
+const { allUploadHandle } = useFileSlicing();
 const speech = ref(null);
 const flag = ref(true);
 const isQueryOne = ref(false); //是否查询的是单个人
@@ -106,24 +110,35 @@ const beforeUpload = (file) => {
 };
 const handleUpload = async () => {
   if (content.value !== "") AIidentify();
-  const formData = new FormData();
-  fileList.value.forEach((file) => {
-    formData.append("file", file);
-  });
-  fileList.value.forEach((item) => {
-    content.value += " 📄" + item.name + " ";
-  });
-  try {
-    const res = await uploadFileAPI(formData);
-    console.log("fileList-res", res);
+
+  console.log("fileList.value", fileList.value);
+  const flag = allUploadHandle(fileList.value);
+  if (flag) {
     message.success("上传成功");
     dialogMoveWithStr("上传成功");
     fileList.value = [];
-  } catch (err) {
+  } else {
     message.error("上传失败");
     dialogMoveWithStr("上传文件失败，请重试😭");
-    console.error(err);
   }
+  // const formData = new FormData();
+  // fileList.value.forEach((file) => {
+  //   formData.append("file", file);
+  // });
+  // fileList.value.forEach((item) => {
+  //   content.value += " 📄" + item.name + " ";
+  // });
+  // try {
+  //   const res = await uploadFileAPI(formData);
+  //   console.log("fileList-res", res);
+  //   message.success("上传成功");
+  //   dialogMoveWithStr("上传成功");
+  //   fileList.value = [];
+  // } catch (err) {
+  //   message.error("上传失败");
+  //   dialogMoveWithStr("上传文件失败，请重试😭");
+  //   console.error(err);
+  // }
 };
 
 //输入框

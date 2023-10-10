@@ -1,6 +1,6 @@
 import request from "../utils/request";
 
-export function uploadFileAPI(file) {
+export function uploadFileAPI(file, name, chunks, chunk) {
     return request({
         url: '/uploadFile',
         method: 'post',
@@ -8,7 +8,10 @@ export function uploadFileAPI(file) {
             'Content-Type': 'multipart/form-data'
         },
         data: {
-            file
+            file,
+            name,
+            chunks,
+            chunk
         }
     })
 }
