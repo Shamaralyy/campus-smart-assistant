@@ -110,8 +110,6 @@ const beforeUpload = (file) => {
 };
 const handleUpload = async () => {
   if (content.value !== "") AIidentify();
-
-  console.log("fileList.value", fileList.value);
   const flag = allUploadHandle(fileList.value);
   if (flag) {
     message.success("上传成功");
@@ -121,24 +119,6 @@ const handleUpload = async () => {
     message.error("上传失败");
     dialogMoveWithStr("上传文件失败，请重试😭");
   }
-  // const formData = new FormData();
-  // fileList.value.forEach((file) => {
-  //   formData.append("file", file);
-  // });
-  // fileList.value.forEach((item) => {
-  //   content.value += " 📄" + item.name + " ";
-  // });
-  // try {
-  //   const res = await uploadFileAPI(formData);
-  //   console.log("fileList-res", res);
-  //   message.success("上传成功");
-  //   dialogMoveWithStr("上传成功");
-  //   fileList.value = [];
-  // } catch (err) {
-  //   message.error("上传失败");
-  //   dialogMoveWithStr("上传文件失败，请重试😭");
-  //   console.error(err);
-  // }
 };
 
 //输入框

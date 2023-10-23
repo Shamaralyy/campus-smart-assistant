@@ -38,6 +38,7 @@ export default function useFileSlicing() {
   // 上传所有文件
   const promiseArr = [];
   function allUploadHandle(files) {
+    filesSliceList.value = []; //清空上次已分片的文件，否则会重复调用接口
     chunkAllFile(files);
 
     filesSliceList.value.forEach((item) => {
