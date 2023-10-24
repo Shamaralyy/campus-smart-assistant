@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@ant-design/icons-vue':
+    specifier: ^6.1.0
+    version: registry.npmmirror.com/@ant-design/icons-vue@6.1.0(vue@3.2.47)
   ant-design-vue:
     specifier: ^3.2.19
     version: registry.npmmirror.com/ant-design-vue@3.2.19(vue@3.2.47)
