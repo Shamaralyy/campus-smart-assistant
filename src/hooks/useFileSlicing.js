@@ -69,7 +69,8 @@ export default function useFileSlicing() {
 
     Promise.all(promiseArr)
       .then((res) => {
-        return true;
+        console.log('uploadAll-res', res);
+        return res;
       })
       .catch((err) => {
         filesSliceList.value.forEach((item) => {
@@ -77,6 +78,7 @@ export default function useFileSlicing() {
             //该文件上传失败
           }
         });
+        //待更改：改成return err
         return false;
       });
   }

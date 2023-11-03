@@ -26,7 +26,10 @@
       </ul>
     </div>
     <Speech @sendRecord="sendRecord" class="speech" ref="speech"></Speech>
-    <QueryS v-if="isQueryOne" />
+    <QueryS v-if="queryType === 1" />
+    <QueryT v-if="queryType === 2" />
+    <QueryC v-if="queryType === 3" />
+    <QueryR v-if="queryType === 4" />
     <div class="ipt-box">
       <input
         ref="ipt"
@@ -74,18 +77,23 @@ import Header from "../components/Header/index.vue";
 import Speech from "../components/SpeechRecognition/index.vue";
 import Loading from "../components/Loading/index.vue";
 import QueryS from "../components/Query/queryS.vue";
+import QueryC from "../components/Query/queryC.vue";
+import QueryT from "../components/Query/queryT.vue";
+import QueryR from "../components/Query/queryR.vue";
 import Graph from "../components/Graph/index.vue";
 //API
 import { centreAPI } from "../api/AI.js";
 import { uploadFileAPI } from "../api/uploadFile.js";
 //hooks
-import useFileSlicing from "../hooks/useFileSlicing";
+import useFileSlicing from "../hooks/useFileSlicing.js";
+//utils
+import { matchRegex } from "../utils/reg.js";
 
 const router = useRouter();
 const { allUploadHandle } = useFileSlicing();
 const speech = ref(null);
 const flag = ref(true);
-const isQueryOne = ref(false); //是否查询的是单个人
+const queryType = ref(0); //查询类别： 1学生 2教师 3课程 4成绩
 
 function record() {
   if (flag.value) {
@@ -110,14 +118,18 @@ const beforeUpload = (file) => {
 };
 const handleUpload = async () => {
   if (content.value !== "") AIidentify();
-  const flag = allUploadHandle(fileList.value);
-  if (flag) {
+  const uploadResult = allUploadHandle(fileList.value);
+  //待更改：上传所有文件结果
+  if (uploadResult) {
     message.success("上传成功");
     dialogMoveWithStr("上传成功");
     fileList.value = [];
   } else {
     message.error("上传失败");
-    dialogMoveWithStr("上传文件失败，请重试😭");
+    //待更改：拼接上传文件返回的错误数组成字符串
+    let errMsg = "";
+    uploadResult.forEach((item) => (errMsg += item));
+    dialogMoveWithStr("上传文件失败，错误信息" + errMsg);
   }
 };
 
@@ -157,35 +169,57 @@ function dialogMoveWithStr(str, delay = 0, callback) {
   }, delay);
 }
 function AIidentify() {
-  let cx = /查询([\u4e00-\u9fa5]{2,4})$/;
-  let sc = /删除([\u4e00-\u9fa5]{2,4})$/;
-  let tj =
-    /添加([\u4e00-\u9fa5]+)\s+(\d{1,2})\s+([\u4e00-\u9fa5]+)\s+(\d+)\s+(\d+)\s+([\u4e00-\u9fa5]+)$/;
-  let xg =
-    /修改([\u4e00-\u9fa5]{2,4})的信息：([\u4e00-\u9fa5]{2,4}\s+\d+\s+(男|女)\s+\d{7}\s+\d{7}\s+[\u4e00-\u9fa5]{2,4})$/;
-  isQueryOne.value = false;
-  if (cx.test(content.value)) {
-    dialogMoveWithStr("请稍等，正在为您查询……", 600);
+  dialogMoveWithStr("请稍等，正在为您查询……", 600);
+  if (matchRegex(content.value, "queryStudent")) {
     dialogMoveWithStr("查询完成!", 1500, () => {
-      isQueryOne.value = true;
+      queryType.value = 1;
     });
-  } else if (sc.test(content.value)) {
+  } else if (matchRegex(content.value, "queryTeacher")) {
+    dialogMoveWithStr("查询完成!", 1500, () => {
+      queryType.value = 2;
+    });
+  } else if (matchRegex(content.value, "queryCourse")) {
+    dialogMoveWithStr("查询完成!", 1500, () => {
+      queryType.value = 3;
+    });
+  } else if (matchRegex(content.value, "queryScore")) {
+    dialogMoveWithStr("查询完成!", 1500, () => {
+      queryType.value = 4;
+    });
+  } else if (matchRegex(content.value, "delete")) {
     dialogMoveWithStr("请稍等，正在为您删除数据……", 600);
     dialogMoveWithStr("删除成功!", 1500);
-  } else if (tj.test(content.value)) {
+  } else if (matchRegex(content.value, "add")) {
     dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
     dialogMoveWithStr("添加成功!", 1500);
-  } else if (xg.test(content.value)) {
+  } else if (matchRegex(content.value, "update")) {
     dialogMoveWithStr("请稍等，正在为您修改数据……", 600);
     dialogMoveWithStr("修改成功!", 1500);
   } else {
-    let str = `格式错误。\n请参照以下示例： \n
-    1.查询所有学生
-    2.查询李一（格式为：查询+学生姓名）
-    3.添加罗 20 男 5615156 5611541 陈老师”（格式为：添加+学生姓名+空格+年龄+空格+电话+空格+学号+空格+辅导员姓名）
-    4.修改李一的信息：李三 20 男 5615156 5611541 陈老师（格式为：修改+学生姓名+的信息：学生姓名+空格+空格+电话+空格+学号+空格+辅导员姓名）
-    5.删除罗（格式为：删除+学生姓名）
-    注意：在关键信息出现之前，前面的文字不做规定，如：我想要删除罗二（只要删除之前不出现：增加’修改，查询这些关键字），这是可以的。但在之后不能有多余的文字，如：删除罗二吧。`;
+    let str = `请参考以下格式发送消息：
+查询：
+查询学生表中所有学生
+查询学生表中+“学生姓名”
+查询课程表中所有课程
+查询课程表中+“老师姓名”+的任课情况
+查询课程表中+“课程名”+学科的任课老师
+查询成绩表中所有成绩
+查询成绩表中+“学生名”+的成绩
+查询成绩表中+“学科名”+学科的所有成绩
+查询成绩表中+“老师名”+老师任教课程的成绩
+添加：
+添加+“学生相关信息”+到学生表中
+添加+“课程相关信息”+到课程表中
+添加+“成绩相关信息”+到成绩表中
+修改：
+修改学生表中的信息：+“学生相关信息”
+修改课程表中的信息：+“课程相关信息”
+修改成绩表中的信息：+“成绩相关信息”
+删除：
+删除学生表中+“学生姓名”
+删除课程表中+“课程名”+课程+“老师名”
+删除成绩表中+“课程名”+课程+“学生名”
+    `;
     dialogMoveWithStr(str, 600);
   }
 }
@@ -199,13 +233,14 @@ function submitMsg() {
       path: "/queryS",
     });
   } else {
-    centreAPI(content.value).then((res) => {
-      console.log("centreAPI-res", res);
-    });
-    AIidentify();
-    if (isQueryOne.value) {
-      //单人查询代码
-    }
+    centreAPI(content.value)
+      .then((res) => {
+        console.log("centreAPI-res", res);
+        AIidentify();
+      })
+      .catch((err) => {
+        console.error("centreAPI调用失败");
+      });
   }
   chatlist.value.push({
     type: 1,
@@ -235,7 +270,6 @@ const sendRecord = (val) => {
   height: 20rem;
   margin-top: 3%;
   background-color: rgba(240, 255, 252, 0.5);
-  // border: 3px solid rgb(137, 197, 183, 0.1);
   overflow-y: scroll;
   ul {
     list-style: none;
