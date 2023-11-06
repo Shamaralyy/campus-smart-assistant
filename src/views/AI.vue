@@ -169,33 +169,47 @@ function dialogMoveWithStr(str, delay = 0, callback) {
   }, delay);
 }
 function AIidentify() {
-  dialogMoveWithStr("请稍等，正在为您查询……", 600);
   if (matchRegex(content.value, "queryStudent")) {
+    dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
       queryType.value = 1;
     });
+    return true;
   } else if (matchRegex(content.value, "queryTeacher")) {
+    dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
       queryType.value = 2;
     });
+    return true;
   } else if (matchRegex(content.value, "queryCourse")) {
+    dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
       queryType.value = 3;
     });
+    return true;
   } else if (matchRegex(content.value, "queryScore")) {
+    dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
       queryType.value = 4;
     });
+    return true;
   } else if (matchRegex(content.value, "delete")) {
+    queryType.value = 0;
     dialogMoveWithStr("请稍等，正在为您删除数据……", 600);
     dialogMoveWithStr("删除成功!", 1500);
+    return true;
   } else if (matchRegex(content.value, "add")) {
+    queryType.value = 0;
     dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
     dialogMoveWithStr("添加成功!", 1500);
+    return true;
   } else if (matchRegex(content.value, "update")) {
+    queryType.value = 0;
     dialogMoveWithStr("请稍等，正在为您修改数据……", 600);
     dialogMoveWithStr("修改成功!", 1500);
+    return true;
   } else {
+    queryType.value = 0;
     let str = `请参考以下格式发送消息：
 查询：
 查询学生表中所有学生
@@ -222,6 +236,7 @@ function AIidentify() {
     `;
     dialogMoveWithStr(str, 600);
   }
+  return false;
 }
 function submitMsg() {
   if (content.value === "" && fileList.value.length === 0) {
@@ -233,14 +248,15 @@ function submitMsg() {
       path: "/queryS",
     });
   } else {
-    centreAPI(content.value)
-      .then((res) => {
-        console.log("centreAPI-res", res);
-        AIidentify();
-      })
-      .catch((err) => {
-        console.error("centreAPI调用失败");
-      });
+    const flag = AIidentify();
+    if (flag)
+      centreAPI(content.value)
+        .then((res) => {
+          console.log("centreAPI-res", res);
+        })
+        .catch((err) => {
+          console.error("centreAPI调用失败");
+        });
   }
   chatlist.value.push({
     type: 1,

@@ -8,7 +8,9 @@
       style="width: 60.1vw"
     >
       <template #bodyCell="{ column, text, record }">
-        <template v-if="['tName'].includes(column.dataIndex)">
+        <template
+          v-if="['sNum', 'sName', 'cName', 'score'].includes(column.dataIndex)"
+        >
           <div>
             <a-input
               v-if="editableData[record.key]"
@@ -69,9 +71,24 @@ const data = [];
 
 const columns = [
   {
-    title: "成绩",
-    dataIndex: "tName",
-    width: "50%",
+    title: "学号",
+    dataIndex: "sNum",
+    width: "25%",
+  },
+  {
+    title: "学生姓名",
+    dataIndex: "sName",
+    width: "25%",
+  },
+  {
+    title: "课程名",
+    dataIndex: "cName",
+    width: "25%",
+  },
+  {
+    title: "考试成绩",
+    dataIndex: "score",
+    width: "25%",
   },
 ];
 
@@ -79,9 +96,13 @@ showData.value = data;
 const dataSource = ref(data);
 const editableData = reactive({});
 dataSource.value.push({
-  cid: "index",
   key: "index",
-  tName: "item.teacherName",
+  sId: "item.sId",
+  cId: "item.cId",
+  sName: "item.sName",
+  sNum: "item.sNum",
+  cName: "item.courseName",
+  score: "item.examResults",
 });
 const edit = (key) => {
   editableData[key] = cloneDeep(
@@ -94,8 +115,8 @@ const save = (key) => {
     editableData[key]
   );
   let curObj = dataSource.value[key];
-  const { cid, tName } = curObj;
-  updateStudent2API(cid, tName).then((res) => {
+  const { cid, sName } = curObj;
+  updateStudent2API(cid, sName).then((res) => {
     console.log("updateStudent2API-res", res);
   });
   delete editableData[key];
