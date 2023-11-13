@@ -48,7 +48,7 @@
 </template>
 <script setup>
 import { cloneDeep } from "lodash-es";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref, defineProps } from "vue";
 //API
 import {
   deleteStudent2API,
@@ -56,17 +56,10 @@ import {
   updateStudent2API,
 } from "../../api/query.js";
 
+const props = defineProps(["msg"]);
+
 const showData = ref([]);
-
-const onDelete = (key) => {
-  deleteStudent2API(dataSource.value[key].cid).then((res) => {
-    console.log("deleteStudent2API-res", res);
-  });
-  dataSource.value = dataSource.value.filter((item) => item.key !== key);
-  showData.value = dataSource.value;
-};
 const data = [];
-
 const columns = [
   {
     title: "课程名称",
@@ -79,16 +72,29 @@ const columns = [
     width: "15%",
   },
 ];
-
-showData.value = data;
 const dataSource = ref(data);
 const editableData = reactive({});
-dataSource.value.push({
-  cid: "item.id",
-  key: "item.id",
-  cName: "item.courseName",
-  tName: "item.teacherName",
+
+onMounted(() => {
+  showData.value = data;
+  props.msg.forEach((item) => {
+    dataSource.value.push({
+      cid: item.cid,
+      key: item.cid,
+      cName: item.courseName,
+      tName: item.teacherName,
+    });
+  });
 });
+
+const onDelete = (key) => {
+  deleteStudent2API(dataSource.value[key].cid).then((res) => {
+    console.log("deleteStudent2API-res", res);
+  });
+  dataSource.value = dataSource.value.filter((item) => item.key !== key);
+  showData.value = dataSource.value;
+};
+
 const edit = (key) => {
   editableData[key] = cloneDeep(
     dataSource.value.filter((item) => key === item.key)[0]

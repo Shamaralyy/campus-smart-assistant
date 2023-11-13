@@ -26,7 +26,7 @@
       </ul>
     </div>
     <Speech @sendRecord="sendRecord" class="speech" ref="speech"></Speech>
-    <QueryS v-if="queryType === 1" />
+    <QueryS v-if="queryType === 1" :msg="msg" />
     <QueryT v-if="queryType === 2" />
     <QueryC v-if="queryType === 3" />
     <QueryR v-if="queryType === 4" />
@@ -238,6 +238,8 @@ function AIidentify() {
   }
   return false;
 }
+
+const msg = ref([]); //centre接口返回结果
 function submitMsg() {
   if (content.value === "" && fileList.value.length === 0) {
     return false;
@@ -253,6 +255,7 @@ function submitMsg() {
       centreAPI(content.value)
         .then((res) => {
           console.log("centreAPI-res", res);
+          msg.value = res.data;
         })
         .catch((err) => {
           console.error("centreAPI调用失败");
