@@ -27,9 +27,9 @@
     </div>
     <Speech @sendRecord="sendRecord" class="speech" ref="speech"></Speech>
     <QueryS v-if="queryType === 1" :msg="msg" />
-    <QueryT v-if="queryType === 2" />
-    <QueryC v-if="queryType === 3" />
-    <QueryR v-if="queryType === 4" />
+    <QueryT v-if="queryType === 2" :msg="msg" />
+    <QueryC v-if="queryType === 3" :msg="msg" />
+    <QueryR v-if="queryType === 4" :msg="msg" />
     <div class="ipt-box">
       <input
         ref="ipt"
@@ -94,7 +94,7 @@ const { allUploadHandle } = useFileSlicing();
 const speech = ref(null);
 const flag = ref(true);
 const queryType = ref(0); //查询类别： 1学生 2教师 3课程 4成绩
-
+const queryTypeTemp = ref(0);
 function record() {
   if (flag.value) {
     speech.value.speakClick();
@@ -170,46 +170,50 @@ function dialogMoveWithStr(str, delay = 0, callback) {
 }
 function AIidentify() {
   if (matchRegex(content.value, "queryStudent")) {
+    queryTypeTemp.value = 1;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
-      queryType.value = 1;
+      queryType.value = queryTypeTemp.value;
     });
     return true;
   } else if (matchRegex(content.value, "queryTeacher")) {
+    queryTypeTemp.value = 2;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
-      queryType.value = 2;
+      queryType.value = queryTypeTemp.value;
     });
     return true;
   } else if (matchRegex(content.value, "queryCourse")) {
+    queryTypeTemp.value = 3;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
-      queryType.value = 3;
+      queryType.value = queryTypeTemp.value;
     });
     return true;
   } else if (matchRegex(content.value, "queryScore")) {
+    queryTypeTemp.value = 4;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
     dialogMoveWithStr("查询完成!", 1500, () => {
-      queryType.value = 4;
+      queryType.value = queryTypeTemp.value;
     });
     return true;
   } else if (matchRegex(content.value, "delete")) {
-    queryType.value = 0;
+    queryTypeTemp.value = 0;
     dialogMoveWithStr("请稍等，正在为您删除数据……", 600);
     dialogMoveWithStr("删除成功!", 1500);
     return true;
   } else if (matchRegex(content.value, "add")) {
-    queryType.value = 0;
+    queryTypeTemp.value = 0;
     dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
     dialogMoveWithStr("添加成功!", 1500);
     return true;
   } else if (matchRegex(content.value, "update")) {
-    queryType.value = 0;
+    queryTypeTemp.value = 0;
     dialogMoveWithStr("请稍等，正在为您修改数据……", 600);
     dialogMoveWithStr("修改成功!", 1500);
     return true;
   } else {
-    queryType.value = 0;
+    queryTypeTemp.value = 0;
     let str = `请参考以下格式发送消息：
 查询：
 查询学生表中所有学生
@@ -241,6 +245,7 @@ function AIidentify() {
 
 const msg = ref([]); //centre接口返回结果
 function submitMsg() {
+  if (queryType.value !== 0) queryType.value = 0;
   if (content.value === "" && fileList.value.length === 0) {
     return false;
   } else if (fileList.value.length !== 0) {
@@ -255,7 +260,7 @@ function submitMsg() {
       centreAPI(content.value)
         .then((res) => {
           console.log("centreAPI-res", res);
-          msg.value = res.data;
+          msg.value = res.data.data;
         })
         .catch((err) => {
           console.error("centreAPI调用失败");

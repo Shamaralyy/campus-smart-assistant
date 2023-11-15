@@ -5,7 +5,7 @@
       :data-source="showData"
       bordered
       :pagination="false"
-      style="width: 60.1vw"
+      style="width: 80vw"
     >
       <template #bodyCell="{ column, text, record }">
         <template
@@ -63,41 +63,35 @@ import {
 } from "../../api/query.js";
 
 const props = defineProps(["msg"]);
+const data = [];
 const showData = ref([]);
 const dataSource = ref(data);
 const editableData = reactive({});
-const data = [];
 
 const columns = [
   {
     title: "学号",
     dataIndex: "sNum",
-    width: "15%",
   },
   {
     title: "姓名",
     dataIndex: "sName",
-    width: "15%",
   },
   {
     title: "年龄",
     dataIndex: "sAge",
-    width: "12%",
   },
   {
     title: "性别",
     dataIndex: "sSex",
-    width: "12%",
   },
   {
     title: "手机号",
     dataIndex: "sPhone",
-    width: "20%",
   },
   {
     title: "辅导员",
     dataIndex: "sAdvisor",
-    width: "20%",
   },
   {
     title: "操作",
@@ -111,14 +105,14 @@ onMounted(() => {
 
   props.msg.forEach((item) => {
     dataSource.value.push({
-      sid: "item.name",
-      key: "index",
-      sNum: "item.sName",
-      sName: "item.sName",
-      sSex: "item.sName",
-      sAge: "item.sName",
-      sPhone: "item.sName",
-      sAdvisor: "item.sName",
+      sid: item.sid,
+      key: item.sid,
+      sNum: item.snum,
+      sName: item.sname,
+      sSex: item.ssex,
+      sAge: item.sage,
+      sPhone: item.sphone,
+      sAdvisor: item.sadvisor,
     });
   });
 });

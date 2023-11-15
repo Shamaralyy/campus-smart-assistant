@@ -76,6 +76,7 @@ const dataSource = ref(data);
 const editableData = reactive({});
 
 onMounted(() => {
+  console.log("props", props);
   showData.value = data;
   props.msg.forEach((item) => {
     dataSource.value.push({
