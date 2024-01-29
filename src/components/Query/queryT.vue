@@ -103,6 +103,18 @@ const save = (key) => {
 const cancel = (key) => {
   delete editableData[key];
 };
+
+onMounted(() => {
+  console.log("props", props.msg);
+  showData.value = data;
+
+  props.msg.forEach((item,index) => {
+    dataSource.value.push({
+      key: [item,index],
+      tName: item
+    });
+  });
+});
 </script>
 <style lang="less" scoped>
 .container {
