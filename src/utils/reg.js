@@ -29,7 +29,7 @@ const deleteList = [
 ];
 
 const updateList = [
-    /^修改(.+)表中的信息(：|:)(.+)$/
+    /^修改(.+)表$/
 ]
 
 /**

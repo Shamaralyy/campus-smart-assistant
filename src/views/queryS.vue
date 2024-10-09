@@ -6,7 +6,7 @@
         <template #icon><plus-outlined /></template>
         增加学生
       </a-button>
-      <a-button class="toggle-btn" @click="toTea">切换为教师</a-button>
+      <a-button class="toggle-btn" @click="pageToTeacher">切换为教师</a-button>
     </div>
     <a-modal v-model:visible="visible" title="填写信息">
       <a-form
@@ -142,7 +142,7 @@ import Speech from "../components/SpeechRecognition/index.vue";
 const $router = useRouter();
 const showData = ref([]);
 //去往教师页面
-const toTea = () => {
+const pageToTeacher = () => {
   $router.replace({
     path: "/queryT",
   });
@@ -220,9 +220,9 @@ const validatesPhone = async (_rule, value) => {
   const reg =
     /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
   if (value === "") {
-    return Promise.reject("请输入身份证号");
+    return Promise.reject("请输入手机号");
   } else if (reg.test(value) === false) {
-    return Promise.reject("请输入正确的身份证号");
+    return Promise.reject("请输入正确的手机号");
   } else {
     return Promise.resolve();
   }
@@ -332,24 +332,33 @@ const columns = [
   },
 ];
 let count = ref(0);
-selectAllStudentPaginateAPI(10, 1).then((res) => {
-  console.log(res.data.data);
-  res.data.data.map((item, index) => {
-    dataSource.value.push({
-      sid: item.name,
-      key: index,
-      sNum: item.sName,
-      sName: item.sName,
-      sSex: item.sName,
-      sAge: item.sName,
-      sPhone: item.sName,
-      sAdvisor: item.sName,
-    });
-  });
-});
 showData.value = data;
 const dataSource = ref(data);
 const editableData = reactive({});
+// selectAllStudentPaginateAPI(10, 1).then((res) => {
+//   res.data.data.map((item, index) => {
+//     dataSource.value.push({
+//       sid: item.name,
+//       key: index,
+//       sNum: item.sName,
+//       sName: item.sName,
+//       sSex: item.sName,
+//       sAge: item.sName,
+//       sPhone: item.sName,
+//       sAdvisor: item.sName,
+//     });
+//   });
+// });
+dataSource.value.push({
+  sid: "学生A",
+  key: 0,
+  sNum: "学生A",
+  sName: "学生A",
+  sSex: "学生A",
+  sAge: "学生A",
+  sPhone: "学生A",
+  sAdvisor: "学生A",
+});
 
 const edit = (key) => {
   editableData[key] = cloneDeep(
@@ -363,8 +372,8 @@ const save = (key) => {
   );
   let curObj = dataSource.value[key];
   const { sId, sNum, sName, sSex, sAge, sPhone, sAdvisor } = curObj;
-  updateStudent2API(sId, sNum, sName, sSex, sAge, sPhone, sAdvisor)
-  .then((res) => {
+  updateStudent2API(sId, sNum, sName, sSex, sAge, sPhone, sAdvisor).then(
+    (res) => {
       console.log("updateStudent2API-res", res);
     }
   );

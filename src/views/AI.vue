@@ -208,7 +208,7 @@ function AIidentify() {
     dialogMoveWithStr("添加成功!", 1500);
     return true;
   } else if (matchRegex(content.value, "update")) {
-    queryTypeTemp.value = 0;
+    queryTypeTemp.value = 5;
     dialogMoveWithStr("请稍等，正在为您修改数据……", 600);
     dialogMoveWithStr("修改成功!", 1500);
     return true;
@@ -230,9 +230,9 @@ function AIidentify() {
 添加+“课程相关信息”+到课程表中
 添加+“成绩相关信息”+到成绩表中
 修改：
-修改学生表中的信息：+“学生相关信息”
-修改课程表中的信息：+“课程相关信息”
-修改成绩表中的信息：+“成绩相关信息”
+修改学生表
+修改课程表
+修改成绩表
 删除：
 删除学生表中+“学生姓名”
 删除课程表中+“课程名”+课程+“老师名”
@@ -245,17 +245,16 @@ function AIidentify() {
 
 const msg = ref([]); //centre接口返回结果
 function submitMsg() {
-  if (queryType.value !== 0) queryType.value = 0;
+  const flag = AIidentify();
   if (content.value === "" && fileList.value.length === 0) {
     return false;
   } else if (fileList.value.length !== 0) {
     handleUpload();
-  } else if (content.value === "查询所有学生") {
+  } else if (content.value === "查询所有学生" || queryTypeTemp.value === 5) {
     router.push({
       path: "/queryS",
     });
   } else {
-    const flag = AIidentify();
     if (flag)
       centreAPI(content.value)
         .then((res) => {

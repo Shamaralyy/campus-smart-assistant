@@ -13,10 +13,25 @@ const routes = [
         component: () => import('../views/login.vue')
     },
     {
+        path: '/about',
+        name: 'about',
+        component: () => import('../views/about.vue')
+    },
+    {
+        path: '/guide',
+        name: 'guide',
+        component: () => import('../views/guide.vue')
+    },
+    {
+        path: '/contact',
+        name: 'contact',
+        component: () => import('../views/contact.vue')
+    },
+    {
         path: '/AI',
         name: 'AI',
         component: () => import('../views/AI.vue'),
-        meta: { isAuth: true }
+        // meta: { isAuth: true }
     },
     {
         path: '/queryS',
@@ -36,14 +51,11 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
-    console.log('to', to);
-    console.log('from', from);
-    console.log('next', next);
-    if(to.meta.isAuth) {
-        console.log('需要权限');
-    }
-    next()
-})
+// router.beforeEach((to, from, next) => {
+//     if (to.meta.isAuth) {
+//         console.log('需要权限');
+//     }
+//     next()
+// })
 
 export default router;

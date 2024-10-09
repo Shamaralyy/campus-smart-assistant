@@ -9,11 +9,10 @@
     />
     <!-- <div class="logo"></div> -->
     <text id="tt" v-if="isHome">校园智慧助手</text>
-    <button>About</button>
-    <button>Service</button>
-    <button>Product</button>
-    <button>Blog</button>
-    <button>Contact Us</button>
+    <button @click="openPage('about')">关于</button>
+    <button @click="openPage('guide')">用户手册</button>
+    <button @click="openJwzx">教务在线</button>
+    <button @click="openPage('contact')">联系我们</button>
     <a-dropdown>
       <div class="user">
         <img
@@ -28,20 +27,10 @@
       <template #overlay>
         <a-menu>
           <a-menu-item key="0">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              学号：{{ id }}
-            </a>
+            <a target="_blank" rel="noopener noreferrer"> 学号：{{ id }} </a>
           </a-menu-item>
           <a-menu-item key="1">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              姓名：{{ name }}
-            </a>
+            <a target="_blank" rel="noopener noreferrer"> 姓名：{{ name }} </a>
           </a-menu-item>
           <a-divider />
           <a href="#" class="reLogin" @click="reLogin">退出登录</a>
@@ -65,22 +54,36 @@ import { logout } from "../../api/login.js";
 
 const router = useRouter();
 const isHome = ref(false);
-const id = sessionStorage.getItem("userMsg")?JSON.parse(sessionStorage.getItem("userMsg")).snum:'未登录'; //学号
-const name = sessionStorage.getItem("userMsg")?JSON.parse(sessionStorage.getItem("userMsg")).sname:'未登录'; //姓名
+const id = sessionStorage.getItem("userMsg")
+  ? JSON.parse(sessionStorage.getItem("userMsg")).snum
+  : "未登录"; //学号
+const name = sessionStorage.getItem("userMsg")
+  ? JSON.parse(sessionStorage.getItem("userMsg")).sname
+  : "未登录"; //姓名
 
 onMounted(() => {
   if (props.title === "当前") isHome.value = true;
   else isHome.value = false;
 });
 
-function reLogin() {
-  console.log('logout',logout);
-  logout.then(res => {
-    console.log('logout-res',res);
-  })
+const openPage = (url) => {
   router.push({
-    path: "/login",
+    path: `/${url}`,
   });
+};
+
+const openJwzx = () => {
+  window.location.href = "http://jwzx.cqupt.edu.cn/";
+};
+
+function reLogin() {
+  logout()
+    .then((res) => {
+      console.log("logout-res", res);
+    })
+    .finally(() => {
+      openPage("login");
+    });
 }
 
 const props = defineProps({
