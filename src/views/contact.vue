@@ -47,6 +47,8 @@
         我们也欢迎有才华、有热情的开发者加入我们的团队，共同打造更加智能的校园生活。有兴趣的同学请将简历发送至我们的邮箱。
       </p>
     </section>
+
+    <img class="word" src="../assets/work.svg" alt="" />
   </div>
 </template>
 
@@ -82,5 +84,13 @@ export default {
 
 .contact-us a:hover {
   text-decoration: underline;
+}
+
+.work {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20%;
 }
 </style>

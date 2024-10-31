@@ -87,6 +87,9 @@
     <p>
       请确保输入信息准确无误，以避免错误操作。在进行添加、修改和删除操作之前，请确保您有足够的权限。如果您在操作过程中遇到任何问题，请联系我们的技术支持团队。
     </p>
+
+    <img class="artist" src="../assets/artist.svg" alt="" />
+    <img class="car" src="../assets/car.svg" alt="" />
   </div>
 </template>
 
@@ -126,5 +129,19 @@ export default {
 .guide-page p {
   text-align: center;
   margin-top: 20px;
+}
+
+.artist {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20%;
+}
+
+.car {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 15%;
 }
 </style>

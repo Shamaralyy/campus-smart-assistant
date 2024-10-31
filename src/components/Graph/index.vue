@@ -2,14 +2,18 @@
   <div ref="main" id="main"></div>
 </template>
 <script setup>
-import { ref, onMounted, getCurrentInstance } from "vue";
+import { ref, onMounted, getCurrentInstance, defineProps } from "vue";
 //API
 import { searchStudentByNameES } from "../../api/chart.js";
+
 const { proxy } = getCurrentInstance();
+const props = defineProps(["keyword"]);
+const keyword = props.keyword;
+
 //  按需引入 echarts
 const main = ref(); // 使用ref创建虚拟DOM引用，使用时用main.value
 onMounted(() => {
-  searchStudentByNameES()
+  searchStudentByNameES(keyword)
     .then((res) => {
       console.log("searchStudentByNameES-res", res);
       chartData.value = res.data;
@@ -19,7 +23,6 @@ onMounted(() => {
     });
 });
 const chartData = ref([]);
-const keyword = "之";
 
 const getLinksData = (arr) => {
   const linksData = [];
@@ -85,7 +88,6 @@ function init() {
     title: {
       text: "",
     },
-    tooltip: {},
     animationDurationUpdate: 1500,
     animationEasingUpdate: "quinticInOut",
     series: [

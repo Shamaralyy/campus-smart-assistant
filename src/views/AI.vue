@@ -30,6 +30,7 @@
     <QueryT v-if="queryType === 2" :msg="msg" />
     <QueryC v-if="queryType === 3" :msg="msg" />
     <QueryR v-if="queryType === 4" :msg="msg" />
+    <Graph v-if="isGraphShow" :keyword="keyword" />
     <div class="ipt-box">
       <input
         ref="ipt"
@@ -62,7 +63,6 @@
       <img class="yy" src="../assets/yy.svg" alt="" @click="record" />
     </div>
     <Loading id="loading" v-show="!flag" />
-    <Graph />
   </div>
 </template>
 
@@ -95,6 +95,9 @@ const speech = ref(null);
 const flag = ref(true);
 const queryType = ref(0); //查询类别： 1学生 2教师 3课程 4成绩
 const queryTypeTemp = ref(0);
+const isGraphShow = ref(false);
+const keyword = ref("");
+
 function record() {
   if (flag.value) {
     speech.value.speakClick();
@@ -169,6 +172,7 @@ function dialogMoveWithStr(str, delay = 0, callback) {
   }, delay);
 }
 function AIidentify() {
+  console.log("content.value", content.value);
   if (matchRegex(content.value, "queryStudent")) {
     queryTypeTemp.value = 1;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
@@ -214,7 +218,8 @@ function AIidentify() {
     return true;
   } else {
     queryTypeTemp.value = 0;
-    let str = `请参考以下格式发送消息：
+    keyword.value = content.value;
+    let str = `如需进行其他操作，请参考以下格式发送消息：
 查询：
 查询学生表中所有学生
 查询学生表中+“学生姓名”
@@ -239,6 +244,10 @@ function AIidentify() {
 删除成绩表中+“课程名”+课程+“学生名”
     `;
     dialogMoveWithStr(str, 600);
+    let str2 = "正在为您生成知识图谱……";
+    dialogMoveWithStr(str2, 1000, () => {
+      isGraphShow.value = true;
+    });
   }
   return false;
 }

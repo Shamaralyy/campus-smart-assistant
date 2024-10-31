@@ -55,6 +55,9 @@
         我们期待您的使用和反馈，让我们共同创造一个更加智能和便捷的校园环境。
       </p>
     </footer>
+
+    <img class="message" src="../assets/message.svg" alt="" />
+    <img class="creative" src="../assets/creative.svg" alt="" />
   </div>
 </template>
 
@@ -107,5 +110,20 @@ export default {
 footer {
   margin-top: 20px;
   text-align: center;
+}
+
+.message {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 445px;
+  height: 300px;
+}
+
+.creative {
+  position: absolute;
+  right: 2%;
+  bottom: 0;
+  width: 15%;
 }
 </style>

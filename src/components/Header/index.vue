@@ -33,7 +33,9 @@
             <a target="_blank" rel="noopener noreferrer"> 姓名：{{ name }} </a>
           </a-menu-item>
           <a-divider />
-          <a href="#" class="reLogin" @click="reLogin">退出登录</a>
+          <div class="reLogin">
+            <a href="#" @click="reLogin">退出登录</a>
+          </div>
           <a-menu-divider />
         </a-menu>
       </template>
@@ -143,6 +145,9 @@ button {
 }
 
 .reLogin {
-  margin-left: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -20%;
 }
 </style>
