@@ -153,7 +153,7 @@ function enter(e) {
 let chatlist = ref([
   {
     type: 0,
-    str: `您好，请问您需要什么帮助？`,
+    str: `您好，请问您需要什么帮助？（详细指令可查询上方用户手册或输入“操作指令”即可）`,
   },
 ]);
 let chatBox = ref(null);
@@ -216,9 +216,7 @@ function AIidentify() {
     dialogMoveWithStr("请稍等，正在为您修改数据……", 600);
     dialogMoveWithStr("修改成功!", 1500);
     return true;
-  } else {
-    queryTypeTemp.value = 0;
-    keyword.value = content.value;
+  } else if (content.value === "操作指令") {
     let str = `如需进行其他操作，请参考以下格式发送消息：
 查询：
 查询学生表中所有学生
@@ -244,6 +242,9 @@ function AIidentify() {
 删除成绩表中+“课程名”+课程+“学生名”
     `;
     dialogMoveWithStr(str, 600);
+  } else {
+    queryTypeTemp.value = 0;
+    keyword.value = content.value;
     let str2 = "正在为您生成知识图谱……";
     dialogMoveWithStr(str2, 1000, () => {
       isGraphShow.value = true;

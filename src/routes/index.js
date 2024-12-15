@@ -5,43 +5,43 @@ const routes = [
         path: '/',
         name: 'home',
         redirect: '/login',
-        component: () => import('../views/login.vue')
+        component: () => import('../pages/login.vue')
     },
     {
         path: '/login',
         name: 'login',
-        component: () => import('../views/login.vue')
+        component: () => import('../pages/login.vue')
     },
     {
         path: '/about',
         name: 'about',
-        component: () => import('../views/about.vue')
+        component: () => import('../pages/about.vue')
     },
     {
         path: '/guide',
         name: 'guide',
-        component: () => import('../views/guide.vue')
+        component: () => import('../pages/guide.vue')
     },
     {
         path: '/contact',
         name: 'contact',
-        component: () => import('../views/contact.vue')
+        component: () => import('../pages/contact.vue')
     },
     {
         path: '/AI',
         name: 'AI',
-        component: () => import('../views/AI.vue'),
+        component: () => import('../pages/AI.vue'),
         // meta: { isAuth: true }
     },
     {
         path: '/queryS',
         name: 'queryS',
-        component: () => import('../views/queryS.vue')
+        component: () => import('../pages/queryS.vue')
     },
     {
         path: '/queryT',
         name: 'queryT',
-        component: () => import('../views/queryT.vue')
+        component: () => import('../pages/queryT.vue')
     },
 ]
 
