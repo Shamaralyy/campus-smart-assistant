@@ -43,6 +43,11 @@ const routes = [
         name: 'queryT',
         component: () => import('../pages/queryT.vue')
     },
+    {
+        path: '/graph',
+        name: 'graph',
+        component: () => import('../pages/graph.vue')
+    },
 ]
 
 const router = createRouter({

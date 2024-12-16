@@ -30,7 +30,7 @@
     <QueryT v-if="queryType === 2" :msg="msg" />
     <QueryC v-if="queryType === 3" :msg="msg" />
     <QueryR v-if="queryType === 4" :msg="msg" />
-    <Graph v-if="isGraphShow" :keyword="keyword" />
+    <!-- <Graph v-if="isGraphShow" :keyword="keyword" /> -->
     <div class="ipt-box">
       <input
         ref="ipt"
@@ -88,6 +88,8 @@ import { uploadFileAPI } from "../api/uploadFile.js";
 import useFileSlicing from "../hooks/useFileSlicing.js";
 //utils
 import { matchRegex } from "../utils/reg.js";
+//const
+import { OP_GUIDE } from "../utils/const.js";
 
 const router = useRouter();
 const { allUploadHandle } = useFileSlicing();
@@ -95,7 +97,7 @@ const speech = ref(null);
 const flag = ref(true);
 const queryType = ref(0); //查询类别： 1学生 2教师 3课程 4成绩
 const queryTypeTemp = ref(0);
-const isGraphShow = ref(false);
+// const isGraphShow = ref(false);
 const keyword = ref("");
 
 function record() {
@@ -172,7 +174,6 @@ function dialogMoveWithStr(str, delay = 0, callback) {
   }, delay);
 }
 function AIidentify() {
-  console.log("content.value", content.value);
   if (matchRegex(content.value, "queryStudent")) {
     queryTypeTemp.value = 1;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
@@ -217,37 +218,17 @@ function AIidentify() {
     dialogMoveWithStr("修改成功!", 1500);
     return true;
   } else if (content.value === "操作指令") {
-    let str = `如需进行其他操作，请参考以下格式发送消息：
-查询：
-查询学生表中所有学生
-查询学生表中+“学生姓名”
-查询课程表中所有课程
-查询课程表中+“老师姓名”+的任课情况
-查询课程表中+“课程名”+学科的任课老师
-查询成绩表中所有成绩
-查询成绩表中+“学生名”+的成绩
-查询成绩表中+“学科名”+学科的所有成绩
-查询成绩表中+“老师名”+老师任教课程的成绩
-添加：
-添加+“学生相关信息”+到学生表中
-添加+“课程相关信息”+到课程表中
-添加+“成绩相关信息”+到成绩表中
-修改：
-修改学生表
-修改课程表
-修改成绩表
-删除：
-删除学生表中+“学生姓名”
-删除课程表中+“课程名”+课程+“老师名”
-删除成绩表中+“课程名”+课程+“学生名”
-    `;
-    dialogMoveWithStr(str, 600);
+    dialogMoveWithStr(OP_GUIDE, 600);
   } else {
     queryTypeTemp.value = 0;
     keyword.value = content.value;
     let str2 = "正在为您生成知识图谱……";
     dialogMoveWithStr(str2, 1000, () => {
-      isGraphShow.value = true;
+      // isGraphShow.value = true;
+      router.push({
+        path: "/graph",
+        query: { keyword: keyword.value },
+      });
     });
   }
   return false;
@@ -272,7 +253,7 @@ function submitMsg() {
           msg.value = res.data.data;
         })
         .catch((err) => {
-          console.error("centreAPI调用失败");
+          console.error("centreAPI调用失败", err);
         });
   }
   chatlist.value.push({
