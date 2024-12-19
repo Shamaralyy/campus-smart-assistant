@@ -20,7 +20,7 @@ const queryScoreList = [
 ];
 
 const addList = [
-    /^添加(.+)到(.+)表中$/
+    /添加到学生表中[：:]\s*(.*)/
 ]
 
 const deleteList = [
