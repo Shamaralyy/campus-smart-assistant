@@ -37,7 +37,7 @@ export default function useFileSlicing() {
 
   // 上传所有文件
   const promiseArr = [];
-  function allUploadHandle(files) {
+  async function allUploadHandle(files) {
     filesSliceList.value = []; //清空上次已分片的文件，否则会重复调用接口
     chunkAllFile(files);
 
@@ -57,20 +57,20 @@ export default function useFileSlicing() {
         )
           .then((res) => {
             item.state = true; //state为true表示上传成功
-            return resolve(res);
+            resolve(res);
           })
           .catch((err) => {
             item.state = false; //state为false表示上传失败
-            return reject(err);
+            reject(err);
           });
       });
       promiseArr.push(curPromise);
     });
-
-    Promise.all(promiseArr)
+    let result = null
+    await Promise.all(promiseArr)
       .then((res) => {
         console.log('uploadAll-res', res);
-        return res;
+        result = res
       })
       .catch((err) => {
         filesSliceList.value.forEach((item) => {
@@ -78,9 +78,10 @@ export default function useFileSlicing() {
             //该文件上传失败
           }
         });
-        //待更改：改成return err
-        return false;
+        result = new Error(err);
       });
+
+    return result
   }
 
   return { allUploadHandle };

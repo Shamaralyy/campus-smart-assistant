@@ -80,10 +80,9 @@ import QueryS from "../components/Query/queryS.vue";
 import QueryC from "../components/Query/queryC.vue";
 import QueryT from "../components/Query/queryT.vue";
 import QueryR from "../components/Query/queryR.vue";
-import Graph from "../components/Graph/index.vue";
+// import Graph from "../components/Graph/index.vue";
 //API
 import { centreAPI } from "../api/AI.js";
-import { uploadFileAPI } from "../api/uploadFile.js";
 //hooks
 import useFileSlicing from "../hooks/useFileSlicing.js";
 //utils
@@ -123,19 +122,21 @@ const beforeUpload = (file) => {
 };
 const handleUpload = async () => {
   if (content.value !== "") AIidentify();
-  const uploadResult = allUploadHandle(fileList.value);
-  //待更改：上传所有文件结果
-  if (uploadResult) {
-    message.success("上传成功");
-    dialogMoveWithStr("上传成功");
-    fileList.value = [];
-  } else {
-    message.error("上传失败");
-    //待更改：拼接上传文件返回的错误数组成字符串
-    let errMsg = "";
-    uploadResult.forEach((item) => (errMsg += item));
-    dialogMoveWithStr("上传文件失败，错误信息" + errMsg);
-  }
+  allUploadHandle(fileList.value).then((uploadResult) => {
+    console.log("uploadResult", uploadResult, uploadResult instanceof Error);
+    if (uploadResult instanceof Error) {
+      message.error("上传失败");
+      //待更改：拼接上传文件返回的错误数组成字符串
+      let errMsg = "";
+      uploadResult.forEach((item) => (errMsg += item));
+      dialogMoveWithStr("上传文件失败，错误信息" + errMsg);
+    } else {
+      //待更改：上传所有文件结果
+      message.success("上传成功");
+      dialogMoveWithStr("上传成功");
+      fileList.value = [];
+    }
+  });
 };
 
 //输入框
@@ -236,12 +237,15 @@ function AIidentify() {
 
 const msg = ref([]); //centre接口返回结果
 function submitMsg() {
-  const flag = AIidentify();
   if (content.value === "" && fileList.value.length === 0) {
     return false;
-  } else if (fileList.value.length !== 0) {
+  }
+  if (fileList.value.length !== 0) {
     handleUpload();
-  } else if (content.value === "查询所有学生" || queryTypeTemp.value === 5) {
+    return;
+  }
+  const flag = AIidentify();
+  if (content.value === "查询所有学生" || queryTypeTemp.value === 5) {
     router.push({
       path: "/queryS",
     });
@@ -256,9 +260,10 @@ function submitMsg() {
           console.error("centreAPI调用失败", err);
         });
   }
+  const sendStr = fileList.value.length ? "上传文件" : content.value;
   chatlist.value.push({
     type: 1,
-    str: content.value,
+    str: sendStr,
   });
   content.value = "";
   ipt.value.focus();
