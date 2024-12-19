@@ -67,6 +67,9 @@
 import { getCurrentInstance, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { loginAPI } from "../api/login.js";
+import { addStudent2API } from "../api/query.js";
+import { message } from "ant-design-vue";
+
 const router = useRouter();
 const route = useRoute();
 const isSignUp = ref(false);
@@ -120,7 +123,7 @@ function login() {
           }, 1000);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
       });
   }
@@ -131,7 +134,16 @@ function register() {
   if (psw.value === "") hasPsw.value = false;
   else hasPsw.value = true;
   if (hasUsername.value && hasPsw.value) {
-    alert("注册成功！");
+    addStudent2API(null, null, username, null, null, psw, null)
+      .then((res) => {
+        console.log("addStudent2API-res", res);
+      })
+      .then(() => {
+        message.success("注册成功");
+      })
+      .catch(() => {
+        message.error("注册失败");
+      });
   }
 }
 </script>

@@ -48,7 +48,7 @@
 </template>
 <script setup>
 import { cloneDeep } from "lodash-es";
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 //API
 import {
   deleteStudent2API,
@@ -108,10 +108,10 @@ onMounted(() => {
   console.log("props", props.msg);
   showData.value = data;
 
-  props.msg.forEach((item,index) => {
+  props.msg.forEach((item, index) => {
     dataSource.value.push({
-      key: [item,index],
-      tName: item
+      key: [item, index],
+      tName: item,
     });
   });
 });
