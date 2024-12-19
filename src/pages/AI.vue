@@ -83,7 +83,7 @@ import QueryR from "../components/Query/queryR.vue";
 // import Graph from "../components/Graph/index.vue";
 //API
 import { centreAPI } from "../api/AI.js";
-import { addStudent2API } from "../api/query.js";
+import { initStudent } from "../api/chart.js";
 //hooks
 import useFileSlicing from "../hooks/useFileSlicing.js";
 //utils
@@ -175,7 +175,7 @@ function dialogMoveWithStr(str, delay = 0, callback) {
     });
   }, delay);
 }
-function AIidentify() {
+async function AIidentify() {
   if (matchRegex(content.value, "queryStudent")) {
     queryTypeTemp.value = 1;
     dialogMoveWithStr("请稍等，正在为您查询……", 600);
@@ -225,6 +225,9 @@ function AIidentify() {
     queryTypeTemp.value = 0;
     keyword.value = content.value;
     let str2 = "正在为您生成知识图谱……";
+    try {
+      await initStudent();
+    } catch (e) {}
     dialogMoveWithStr(str2, 1000, () => {
       // isGraphShow.value = true;
       router.push({
