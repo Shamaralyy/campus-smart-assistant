@@ -134,15 +134,7 @@ function register() {
   if (psw.value === "") hasPsw.value = false;
   else hasPsw.value = true;
   if (hasUsername.value && hasPsw.value) {
-    addStudent2API(
-      0,
-      username.value,
-      0,
-      "未填写",
-      "未填写",
-      psw.value,
-      "未填写"
-    )
+    addStudent2API(0, username.value, "", "", "", psw.value, "")
       .then((res) => {
         console.log("addStudent2API-res", res);
       })
