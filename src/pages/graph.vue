@@ -36,7 +36,7 @@ onMounted(() => {
 });
 
 const fetchData = () => {
-  searchStudentByNameES()
+  searchStudentByNameES(keyword)
     .then((res) => {
       console.log("searchStudentByNameES-res", res.data);
       graphData.value = res.data;
