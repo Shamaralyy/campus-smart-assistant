@@ -134,7 +134,7 @@ function register() {
   if (psw.value === "") hasPsw.value = false;
   else hasPsw.value = true;
   if (hasUsername.value && hasPsw.value) {
-    addStudent2API(null, username.value, null, null, null, psw.value, null)
+    addStudent2API(0, username.value, 0, "", "", psw.value, "")
       .then((res) => {
         console.log("addStudent2API-res", res);
       })

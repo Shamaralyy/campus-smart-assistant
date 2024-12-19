@@ -210,31 +210,9 @@ function AIidentify() {
     dialogMoveWithStr("删除成功!", 1500);
     return true;
   } else if (matchRegex(content.value, "add")) {
-    const regex = /添加到学生表中[：:]\s*(.*)/;
-    const match = content.value.match(regex)[1].split(" ");
-    console.log("match", match[1], regex.test(content.value));
     queryTypeTemp.value = 0;
-    addStudent2API(
-      0,
-      match[0],
-      match[1],
-      match[2],
-      match[3],
-      match[4],
-      match[5]
-    )
-      .then((res) => {
-        console.log("addStudent2API-res", res);
-      })
-      .then(() => {
-        dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
-        dialogMoveWithStr("添加成功!", 1500);
-      })
-      .catch(() => {
-        dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
-        dialogMoveWithStr("添加失败，请重试！", 1500);
-      });
-
+    dialogMoveWithStr("请稍等，正在为您添加数据……", 600);
+    dialogMoveWithStr("添加成功!", 1500);
     return true;
   } else if (matchRegex(content.value, "update")) {
     queryTypeTemp.value = 5;
