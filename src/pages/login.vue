@@ -4,7 +4,7 @@
       <div :class="{ box: true, 'sign-up': isSignUp }">
         <h1>校园智慧助手</h1>
         <h1>校园智慧助手</h1>
-        <a href="#" class="reg" @click="reg">还未注册？点击注册 </a>
+        <!-- <a href="#" class="reg" @click="reg">还未注册？点击注册 </a> -->
         <a href="#" class="log" @click="log">已有账户？点击登录 </a>
         <img class="bloom" src="../assets/blooming.svg" alt="" />
         <img class="street" src="../assets/street.svg" alt="" />
