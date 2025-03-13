@@ -1,61 +1,36 @@
 <template>
-  <div class="about-page">
-    <h1>校园智慧助手 - 关于我们</h1>
-    <section class="mission">
-      <h2>我们的使命</h2>
-      <ul>
-        <li>连接师生：通过智能查询系统，让师生之间的沟通更加顺畅。</li>
-        <li>信息透明：确保所有校园信息公开透明，便于师生获取。</li>
-        <li>智能服务：利用人工智能技术，提供个性化服务和推荐。</li>
-      </ul>
-    </section>
-
-    <section class="features">
-      <h2>功能介绍</h2>
-      <ul>
-        <li>学生信息查询：快速查找学生基本信息、课程表和成绩。</li>
-        <li>教师信息查询：获取教师的联系方式、教学课程和研究方向。</li>
-        <li>课程信息查询：查看课程详情、时间表和相关资源。</li>
-        <li>成绩信息查询：实时更新学生成绩，支持历史成绩查询。</li>
-        <li>校园新闻：获取校园最新新闻和通知。</li>
-        <li>活动日历：查看校园活动安排和重要日期。</li>
-      </ul>
-    </section>
-
-    <section class="tech-support">
-      <h2>技术支持</h2>
-      <ul>
-        <li>数据安全：采用先进的数据加密技术，保护用户隐私。</li>
-        <li>系统稳定：24/7系统监控，确保服务不间断。</li>
-        <li>用户支持：提供在线帮助和反馈渠道。</li>
-      </ul>
-    </section>
-
-    <section class="faq">
-      <h2>常见问题</h2>
-      <ul>
-        <li>如何注册账号？</li>
-        <li>如何找回密码？</li>
-        <li>如何提交反馈？</li>
-      </ul>
-    </section>
-
-    <section class="partners">
-      <h2>合作伙伴</h2>
-      <ul>
-        <li>图书馆</li>
-        <li>教务处</li>
-        <li>学生事务办公室</li>
-        <li>IT支持中心</li>
-      </ul>
-    </section>
-
-    <footer>
-      <p>
-        我们期待您的使用和反馈，让我们共同创造一个更加智能和便捷的校园环境。
-      </p>
-    </footer>
-
+  <div class="about-container">
+    <h1>关于校园智慧助手</h1>
+    <h4 style="font-size: large; margin-top: 120px">主要功能</h4>
+    <ul>
+      <li>
+        用户可以通过输入规定格式的自然语言完成数据的查询、增加、删除操作。
+      </li>
+      <li>
+        支持语音输入转文字功能，利用 Web Speech API
+        实现语音识别，用户可以通过语音指令完成操作。
+      </li>
+      <li>
+        通过 Elasticsearch
+        实现联想搜索功能，用户输入关键字后，系统会自动联想并高亮显示相关结果。
+      </li>
+      <li>
+        提供表格自动录入学生成绩的功能，用户可以方便地录入和管理学生成绩。
+      </li>
+    </ul>
+    <h4 style="font-size: large; margin-top: 60px">未来展望</h4>
+    <ul>
+      <li>
+        亲爱的用户，感谢您选择校园智慧助手！您的信任和支持是我们不断前行的动力。
+      </li>
+      <li>
+        在未来的开发中，我们将持续优化校园智慧助手，致力于为校园用户提供更加高效、便捷和智能的体验。
+      </li>
+      <li>我们期待与您一起见证校园智慧助手的成长，共同探索更多可能。</li>
+      <li>
+        如果您有任何想法或建议，请随时与我们联系，您的支持是我们前进的动力。
+      </li>
+    </ul>
     <img class="message" src="../assets/message.svg" alt="" />
     <img class="creative" src="../assets/creative.svg" alt="" />
   </div>
@@ -64,52 +39,29 @@
 <script>
 export default {
   name: "AboutPage",
-  methods: {
-    openPage(page) {
-      console.log("Opening page:", page);
-      // 你的逻辑代码
-    },
-  },
 };
 </script>
 
 <style scoped>
-.about-page {
-  max-width: 800px;
-  margin: auto;
+.about-container {
   padding: 20px;
-}
-
-.about-page h1,
-.about-page h2 {
   text-align: center;
 }
-
-.about-page ul {
+h1 {
+  color: #2c3e50;
+}
+p {
+  font-size: 16px;
+  color: #555;
+}
+ul {
   list-style-type: none;
-  padding-left: 0;
+  padding: 0;
 }
-
-.about-page li {
-  margin-bottom: 10px;
-}
-
-.about-page p {
-  text-align: justify;
-}
-
-.about-page a {
-  color: blue;
-  text-decoration: none;
-}
-
-.about-page a:hover {
-  text-decoration: underline;
-}
-
-footer {
-  margin-top: 20px;
-  text-align: center;
+li {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #333;
 }
 
 .message {

@@ -14,7 +14,7 @@
       <p>
         <strong>前端团队：</strong
         ><a
-          href="https://gitee.com/shamaralyy/campus-smart-assistant"
+          href="https://gitee.com/luojunzhong/smart_campus_system"
           target="_blank"
           >前端代码仓库</a
         >
@@ -22,7 +22,7 @@
       <p>
         <strong>后端团队：</strong
         ><a
-          href="https://gitee.com/luojunzhong/smart-campus-system"
+          href="https://gitee.com/luojunzhong/smart_campus_system"
           target="_blank"
           >后端代码仓库</a
         >
@@ -44,7 +44,7 @@
     <section class="join-us">
       <h2>加入我们</h2>
       <p>
-        我们也欢迎有才华、有热情的开发者加入我们的团队，共同打造更加智能的校园生活。有兴趣的同学请将简历发送至我们的邮箱。
+        我们也欢迎有才华、有热情的开发者加入我们的团队，共同打造更加智能的校园生活。有兴趣的同学请将个人介绍发送至我们的邮箱。
       </p>
     </section>
 
